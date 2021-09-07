@@ -1,17 +1,7 @@
-'''
-Classes and routines for evaluate  
-
-'''
 #!/usr/bin/env python3
 import numpy as np
 import os
 from glob import glob
-#
-from PIL import Image
-from numpy.linalg import svd
-import torch
-from torch.utils.data import Dataset
-from torchvision import datasets, transforms
 
 _seed=20201205
 decomposed_trainset = "data/CIFAR10_train.decomposed"
@@ -39,10 +29,6 @@ def get_macrolabel(label_lookup, labels):
 
 def seed():
 	np.random.seed(_seed)
-	torch.manual_seed(_seed)
-	torch.cuda.manual_seed(_seed)
-	torch.backends.cudnn.deterministic = True
-	torch.backends.cudnn.benchmark = False
 
 ## evaluate routines
 class Blindtest():
@@ -91,37 +77,6 @@ class Blindtest():
 
 		return np.percentile(scores_correct, fpr_level)
 		
-
-	def show_testresult(self, oodd_fpr_level):
-		result_by_classifier = {}
-		for trainset in self.testsets.keys():
-			result_by_method = {}
-			for method in self.methods.keys():
-				tpr, claerror = [], []
-				if method != "none":
-					result_file = result_folder + "{}_{}{}_{}_none.npy".format(\
-												trainset, method, self.networks[trainset], trainset)
-				else:
-					result_file = result_folder + "{}{}_{}_none.npy".format(\
-												trainset, self.networks[trainset], trainset)
-				if oodd_fpr_level > 0:
-					oodd_threshold = self.get_oodd_threshold(\
-											result_file, oodd_fpr_level, self.alpha[trainset])
-				else:
-					oodd_threshold = None
-
-				for attackid in self.attacks.keys():
-					 _tpr, _claerror = self.get_setresult(attackid, oodd_threshold, trainset, method)
-					 if _tpr is not None: tpr.append(_tpr)
-					 claerror.append(_claerror)
-
-				result_by_method[method] = (np.mean(tpr) if len(tpr) >0 else None, np.mean(claerror))
-
-			result_by_classifier[trainset] = result_by_method
-
-		return result_by_classifier
-
-
 	def get_setresult(self, attackid,  oodd_threshold, trainset, method):
 
 		def _dual_match(trainset, pred, pred_parent):
@@ -201,8 +156,65 @@ class Blindtest():
 		else:
 			return None, np.mean(cla_err)
 
+	def result_overall(self, oodd_fpr_level):
+		result_by_classifier = {}
+		for trainset in self.testsets.keys():
+			result_by_method = {}
+			for method in self.methods.keys():
+				tpr, claerror = [], []
+				if method != "none":
+					result_file = result_folder + "{}_{}{}_{}_none.npy".format(\
+												trainset, method, self.networks[trainset], trainset)
+				else:
+					result_file = result_folder + "{}{}_{}_none.npy".format(\
+												trainset, self.networks[trainset], trainset)
+				if oodd_fpr_level > 0:
+					oodd_threshold = self.get_oodd_threshold(\
+											result_file, oodd_fpr_level, self.alpha[trainset])
+				else:
+					oodd_threshold = None
+
+				for attackid in self.attacks.keys():
+					 _tpr, _claerror = self.get_setresult(attackid, oodd_threshold, trainset, method)
+					 if _tpr is not None: tpr.append(_tpr)
+					 claerror.append(_claerror)
+
+				result_by_method[method] = (np.mean(tpr) if len(tpr) >0 else None, np.mean(claerror))
+
+			result_by_classifier[trainset] = result_by_method
+
+		return result_by_classifier
+
+	def result_advdefense(self):
+
+		def _acc(result_file):
+			content = np.load(result_file, allow_pickle=True).item()
+			pred_id = content["objpred"]
+			truth_id = content["objtrue"]
+			cla_correct = 0
+			for i in range(len(pred_id)):
+				if truth_id[i] == pred_id[i]: cla_correct+=1
+			return  cla_correct/len(truth_id)
+		
+		result_by_classifier = {}
+		for trainset in self.testsets.keys():
+
+			result_by_attack = {}
+			for attackid in self.attacks.keys():
+				result_by_method = {}
+				for method in self.methods.keys():
+					if method=="none": continue
+
+					result_file = result_folder + "{}_{}{}_{}_{}.npy".format(trainset, method, \
+														self.networks[trainset], trainset, attackid)
+					result_by_method[method]  = _acc(result_file)
+
+				result_by_attack[attackid] = result_by_method
+			result_by_classifier[trainset] = result_by_attack	
+
+		return result_by_classifier
+
 
 	def runtest(self):
 		seed()
 		#TODO
-

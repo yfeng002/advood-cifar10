@@ -5,10 +5,11 @@ This repository contains the result in our paper and the CIFAR10 model trained w
 ## Prerequisites
 * Python 3.7+
 * [Prettyatable](https://pypi.org/project/prettytable/)
+* PyTorch 1.8+ (for New Test only)
 
 ## Result
 * Extract the result.tar.bz2 and place in the result folder
-* Run `python evaluate.py` to show overall result.
+* Run `python evaluate.py` to show test results.
 
 ## New Test (TODO)
 * Extract the model.tar.bz2 and place in the model folder

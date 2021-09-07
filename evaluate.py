@@ -8,10 +8,41 @@ oodd_fpr_levels = [0,10,15,20]
 seed()
 tester = Blindtest()
 
+## adversarial defense
+result_dict = tester.result_advdefense()
+print("\n")
+print("Classification Accuracy over ID")
+table = PrettyTable()
+for classifier, ret_c in result_dict.items(): 
+	tb_header, tb_row = [], []	
+	for attackid, ret_m in ret_c.items():
+		if attackid!="none": continue
+		for mt, acc in ret_m.items():
+			tb_header.append(tester.methods[mt])
+			tb_row.append(acc)
+	table.add_row([classifier] + ["%0.3f" % x for x in tb_row])
+table.field_names = [classifier] + tb_header
+print(table)
+print("\n")
+print("Classification Accuracy over Adversaries")
+for classifier, ret_c in result_dict.items(): 
+	table = PrettyTable()
+	for attackid, ret_m in ret_c.items():
+		if attackid=="none": continue
+		tb_header, tb_row = [], []
+		for mt, acc in ret_m.items():
+			tb_header.append(tester.methods[mt])
+			tb_row.append(acc)
+		table.add_row([attackid] + ["%0.3f" % x for x in tb_row])
+	table.field_names = [classifier] + tb_header
+	print(table)
+print("\n\n")
+
+
+## overall performance
 for fpr_level in oodd_fpr_levels:
 
-	result_dict = tester.show_testresult(fpr_level)	
-	tb_header = {}
+	result_dict = tester.result_overall(fpr_level)	
 	claerror_average, tpr_average = {}, {}
 
 	for classifier, result in result_dict.items():
@@ -53,5 +84,4 @@ for fpr_level in oodd_fpr_levels:
 		print("Classification Error")
 		print(table)
 	
-
 	print("\n")

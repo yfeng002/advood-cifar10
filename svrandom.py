@@ -29,6 +29,10 @@ def get_macrolabel(label_lookup, labels):
 
 def seed():
 	np.random.seed(_seed)
+	#torch.manual_seed(_seed)
+	#torch.cuda.manual_seed(_seed)
+	#torch.backends.cudnn.deterministic = True
+	#torch.backends.cudnn.benchmark = False
 
 ## evaluate routines
 class Blindtest():
@@ -161,6 +165,7 @@ class Blindtest():
 		for trainset in self.testsets.keys():
 			result_by_method = {}
 			for method in self.methods.keys():
+				if method == "none": continue
 				tpr, claerror = [], []
 				if method != "none":
 					result_file = result_folder + "{}_{}{}_{}_none.npy".format(\
@@ -213,8 +218,3 @@ class Blindtest():
 			result_by_classifier[trainset] = result_by_attack	
 
 		return result_by_classifier
-
-
-	def runtest(self):
-		seed()
-		#TODO

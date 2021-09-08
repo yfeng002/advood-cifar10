@@ -17,7 +17,7 @@ This repository contains the result in our paper and the CIFAR10 model trained w
 * Extract the model.tar.bz2 and place in the model folder. 
 * Run `python evaluate.py --model CIFAR10-svrandom+.pt` to produce new results that overwrite exiting files in the result/ folder.
 * Testsets CIFAR10, SVHN, Gaussian and Uniform will be automatically downloaded or created. To include GTSDB and LSUN as OOD testsets:
-** Install [Pillow](https://pillow.readthedocs.io/en/stable/)
+* * Install [Pillow](https://pillow.readthedocs.io/en/stable/)
 * * Download the test subset from (https://benchmark.ini.rub.de/) and extract png images into folder data/GTSDB_Test/. 
 * * Download the test subset from (https://github.com/fyu/lsun) and extract png images into folder data/LSUN_Test/.
 

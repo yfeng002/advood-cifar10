@@ -13,7 +13,7 @@ This repository contains the result in our paper and the CIFAR10 model trained w
 * Extract the result.tar.bz2 and place in the result folder
 * Run `python evaluate.py` to get test results.
 
-## New Test (TODO)
+## New Test
 * Extract the model.tar.bz2 and place in the model folder. 
 * Run `python evaluate.py --model CIFAR10-svrandom+.pt` to produce new results that overwrite exiting files in the result/ folder.
 * Testsets CIFAR10, SVHN, Gaussian and Uniform will be automatically downloaded or created. 

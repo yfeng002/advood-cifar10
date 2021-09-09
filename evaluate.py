@@ -1,12 +1,20 @@
+#!/usr/bin/env python3
+'''
+Script for result and new test
+
+'''
 import os
+import argparse
 import numpy as np
 from prettytable import PrettyTable
 from svrandom import seed, Blindtest, oodd_fpr_levels
 
+
 seed()
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--model', default=None, type=str)
-tester = Blindtest() # parser.parse_args()
+tester = Blindtest(parser.parse_args()) 
 
 ## Adversarial defense
 result_dict = tester.result_advdefense()

@@ -1,14 +1,14 @@
 import os
 import numpy as np
 from prettytable import PrettyTable
-from svrandom import seed, Blindtest
-
-oodd_fpr_levels = [0,10,15,20]
+from svrandom import seed, Blindtest, oodd_fpr_levels
 
 seed()
-tester = Blindtest()
+parser = argparse.ArgumentParser()
+parser.add_argument('--model', default=None, type=str)
+tester = Blindtest() # parser.parse_args()
 
-## adversarial defense
+## Adversarial defense
 result_dict = tester.result_advdefense()
 print("\n")
 print("Classification Accuracy over ID")
@@ -79,7 +79,7 @@ for classifier, ret_c in result_dict.items():
 print("\n\n")
 
 
-### overall performance
+### Overall performance
 for fpr_level in oodd_fpr_levels:
 
 	result_dict = tester.result_overall(fpr_level)	

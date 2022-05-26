@@ -1,6 +1,8 @@
 #  A Unified Perspective on Adversarial and Out-of-Distribution Detection in the Open World
 
-This repository contains the results from our paper and the CIFAR10 model trained with the SVrandom+ method.
+This repository contains the results and the CIFAR10 model trained with the SVrandom+ method in our AAAI 2022 workshop paper:
+
+Yeli Feng, Daniel Jun Xian Ng and Arvind Easwaran, "A Unified Perspective on Adversarial and Out-of-Distribution Detection in the Open World", Engineering Dependable and Secure Machine Learning Systems (EDSMLS) - co-located with AAAI, 2022.
 
 ## Prerequisites
 * Python 3.7+
